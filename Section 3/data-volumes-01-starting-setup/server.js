@@ -45,7 +45,4 @@ app.post('/create', async (req, res) => {
   });
 });
 
-app.listen(80, () => {
-  console.log('Server is running on port 80');
-  console.log('http://localhost:80');
-});
+app.listen(process.env.PORT);

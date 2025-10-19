@@ -16,8 +16,14 @@ COPY . .
 # Create the temp directory for volume mounting
 RUN mkdir -p /app/temp
 
+# Arguments
+ARG DEFAULT_PORT=80
+
+# Set the environment variable for the port
+ENV PORT=$DEFAULT_PORT
+
 # Expose the port that the application will run on
-EXPOSE 80
+EXPOSE $PORT
 
 # # Add a volume to the container
 # VOLUME ["/app/feedback"]
