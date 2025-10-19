@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
+# Create the temp directory for volume mounting
+RUN mkdir -p /app/temp
+
 # Expose the port that the application will run on
 EXPOSE 80
 

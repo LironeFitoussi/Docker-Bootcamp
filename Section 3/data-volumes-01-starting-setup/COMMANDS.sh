@@ -1,0 +1,10 @@
+# This build command is used to build the Docker image with the volumes mounted.
+docker build -t feedback-node:volumes .
+
+# This run command is used to run the Docker container with the volumes mounted.
+docker run -d --rm -p 3000:80 --name feedback-app -v feedback:/app/feedback -v "/Users/lironefitoussi/Developer/Docker-Bootcamp/Section 3/data-volumes-01-starting-setup:/app" -v /app/node_modules feedback-node:volumes
+
+# This run command is used to run the Docker container with the volumes mounted and the read-only flag set.
+# Note: We mount temp directory first, then the main app directory as read-only
+docker run -d --rm -p 3000:80 --name feedback-app -v feedback:/app/feedback -v temp-volume:/app/temp -v "/Users/lironefitoussi/Developer/Docker-Bootcamp/Section 3/data-volumes-01-starting-setup:/app:ro" -v /app/node_modules feedback-node:volumes
+
