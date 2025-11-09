@@ -16,5 +16,8 @@ COPY . .
 # Set the environment variable for the port
 EXPOSE 3000
 
+# Enable polling for file watching (required for Docker volumes on Windows)
+ENV CHOKIDAR_USEPOLLING=true
+
 # Expose the port that the application will run on
 CMD ["npm", "start"]
