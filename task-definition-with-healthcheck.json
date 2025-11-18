@@ -1,0 +1,101 @@
+{
+    "family": "goals-app",
+    "executionRoleArn": "arn:aws:iam::975050225319:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "mongodb",
+            "image": "mongo:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 27017,
+                    "protocol": "tcp",
+                    "name": "mongodb-27017-tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "MONGO_INITDB_ROOT_USERNAME",
+                    "value": "lirone"
+                },
+                {
+                    "name": "MONGO_INITDB_ROOT_PASSWORD",
+                    "value": "secret"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "mongosh --eval 'db.runCommand({ping: 1})' --quiet || exit 1"
+                ],
+                "interval": 10,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 40
+            },
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/goals-app",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "mongodb"
+                }
+            }
+        },
+        {
+            "name": "backend",
+            "image": "lironefitoussi111/goals-node",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "protocol": "tcp",
+                    "name": "backend-80-tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "MONGODB_PASSWORD",
+                    "value": "secret"
+                },
+                {
+                    "name": "MONGODB_USERNAME",
+                    "value": "lirone"
+                },
+                {
+                    "name": "MONGODB_URL",
+                    "value": "localhost"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "dependsOn": [
+                {
+                    "containerName": "mongodb",
+                    "condition": "HEALTHY"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/goals-app",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "backend"
+                }
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024"
+}
+
